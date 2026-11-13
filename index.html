@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quadrilaterals - dxsh</title><!-- Default favicon -->
+<link rel="icon" type="image/png" href="daksh.png">
+<!-- Light mode favicon -->
+<link rel="icon" type="image/png" href="black.png" media="(prefers-color-scheme: light)">
+<!-- Dark mode favicon -->
+<link rel="icon" type="image/png" href="white.png" media="(prefers-color-scheme: dark)">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> 
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .math-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        canvas {
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .tab-active {
+            background-color: #4f46e5;
+            color: #ffffff;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.25);
+        }
+        .tab-inactive {
+            background-color: #ffffff;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+        .tab-inactive:hover {
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+        .proof-step-active {
+            border-left: 4px solid #4f46e5;
+            background-color: #eef2ff;
+        }
+        /* Custom scrollbar for clean tables and lists */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Top Academic Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <polygon points="4 6 19 4 21 18 6 20 4 6"></polygon>
+                        <line x1="4" y1="6" x2="21" y2="18" stroke-dasharray="2 2"></line>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <!--<span class="text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">dxsh</span>
+                        <span class="text-xs font-medium text-slate-500">only</span>-->
+                    </div>
+                    <h1 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">Interactive Quadrilaterals</h1>
+                    <p class="text-lg sm:text-xs text-slate-900 tracking-tight">~dxsh</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="flex flex-wrap gap-1.5 sm:gap-2" id="mainNav">
+                <button onclick="switchSection('intro')" id="nav-intro" class="tab-active px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer">
+                    1. Angle Sum (360°)
+                </button>
+                <button onclick="switchSection('types')" id="nav-types" class="tab-inactive px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer">
+                    2. Types &amp; Properties
+                </button>
+                <button onclick="switchSection('theorems')" id="nav-theorems" class="tab-inactive px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer">
+                    3. Theorems (8.1–8.10)
+                </button>
+                <button onclick="switchSection('riders')" id="nav-riders" class="tab-inactive px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer">
+                    4. NCERT Examples
+                </button>
+                <button onclick="switchSection('quiz')" id="nav-quiz" class="tab-inactive px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all cursor-pointer">
+                    5. Practice Quiz
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ===================================================================== -->
+        <!-- SECTION 1: INTRODUCTION & INTERACTIVE ANGLE SUM EXPLORER              -->
+        <!-- ===================================================================== -->
+        <section id="sec-intro" class="space-y-6">
+            <!--<div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm"> -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- Theory & Formal Proof -->
+                    <div class="lg:col-span-6 space-y-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">8.1 Introduction &amp; 8.2 Angle Sum Property</h2>
+                            <p class="text-sm text-slate-600 mt-1 leading-relaxed">
+                                A plane closed figure formed by joining four points in an order (where no three points are collinear) is called a <strong>quadrilateral</strong>.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
+                                <div class="text-lg font-bold text-indigo-600">4</div>
+                                <div class="text-xs font-medium text-slate-600">Vertices (A,B,C,D)</div>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
+                                <div class="text-lg font-bold text-indigo-600">4</div>
+                                <div class="text-xs font-medium text-slate-600">Sides (AB,BC,CD,DA)</div>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
+                                <div class="text-lg font-bold text-indigo-600">4</div>
+                                <div class="text-xs font-medium text-slate-600">Interior Angles</div>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
+                                <div class="text-lg font-bold text-teal-600">2</div>
+                                <div class="text-xs font-medium text-slate-600">Diagonals (AC, BD)</div>
+                            </div>
+                        </div>
+
+                        <!-- Formal Proof Box -->
+                        <div class="bg-indigo-50/60 border border-indigo-100 rounded-xl p-4 space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-sm font-bold text-indigo-950">Theorem: Sum of angles of a quadrilateral is 360°</h3>
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-indigo-100 text-indigo-800">Formal Proof</span>
+                            </div>
+                            <p class="text-xs text-slate-700"><strong>Given:</strong> A quadrilateral <span class="math-font">ABCD</span>.</p>
+                            <p class="text-xs text-slate-700"><strong>To Prove:</strong> <span class="math-font">&ang;A + &ang;B + &ang;C + &ang;D = 360°</span></p>
+                            <p class="text-xs text-slate-700"><strong>Construction:</strong> Join diagonal <span class="math-font">AC</span> to divide quadrilateral <span class="math-font">ABCD</span> into two triangles: <span class="math-font">&triangle;ADC</span> and <span class="math-font">&triangle;ABC</span>.</p>
+                            <div class="bg-white rounded-lg p-3 border border-indigo-100 text-xs text-slate-700 space-y-1.5 math-font">
+                                <div>1. In &triangle;ADC: &ang;DAC + &ang;ACD + &ang;D = 180° &nbsp;<span class="text-slate-400 font-sans">(Angle sum of &triangle;) ...(i)</span></div>
+                                <div>2. In &triangle;ABC: &ang;CAB + &ang;ACB + &ang;B = 180° &nbsp;<span class="text-slate-400 font-sans">(Angle sum of &triangle;) ...(ii)</span></div>
+                                <div>3. Adding (i) &amp; (ii):</div>
+                                <div class="pl-3 text-indigo-700">(&ang;DAC + &ang;CAB) + (&ang;ACD + &ang;ACB) + &ang;B + &ang;D = 180° + 180°</div>
+                                <div class="pl-3 font-semibold text-teal-700">&rArr; &ang;A + &ang;C + &ang;B + &ang;D = 360° &nbsp;(Hence Proved)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Canvas Simulation -->
+                    <div class="lg:col-span-6 flex flex-col gap-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200">
+                            <span class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+                                Drag any vertex (A, B, C, D)
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <button id="btnToggleDiagIntro" onclick="toggleIntroDiagonal()" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition cursor-pointer">
+                                    Diagonal AC: ON
+                                </button>
+                                <button onclick="resetIntroQuad()" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 transition cursor-pointer">
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="relative w-full h-80 sm:h-96 bg-slate-900 rounded-2xl overflow-hidden shadow-inner border border-slate-800">
+                            <canvas id="canvasIntro"></canvas>
+                            <div id="introWarning" class="hidden absolute top-3 left-3 right-3 bg-amber-500/95 text-slate-950 text-xs font-semibold px-3 py-1.5 rounded-lg shadow">
+                                Keep quadrilateral convex (non-self-intersecting) for standard interior angles!
+                            </div>
+                        </div>
+
+                        <!-- Live Telemetry Readout -->
+                        <div class="grid grid-cols-5 gap-2 text-center">
+                            <div class="bg-white border border-slate-200 rounded-xl p-2">
+                                <div class="text-[11px] font-medium text-slate-500">&ang;A</div>
+                                <div id="readoutA" class="text-sm font-bold text-indigo-600 math-font">90.0°</div>
+                            </div>
+                            <div class="bg-white border border-slate-200 rounded-xl p-2">
+                                <div class="text-[11px] font-medium text-slate-500">&ang;B</div>
+                                <div id="readoutB" class="text-sm font-bold text-indigo-600 math-font">90.0°</div>
+                            </div>
+                            <div class="bg-white border border-slate-200 rounded-xl p-2">
+                                <div class="text-[11px] font-medium text-slate-500">&ang;C</div>
+                                <div id="readoutC" class="text-sm font-bold text-indigo-600 math-font">90.0°</div>
+                            </div>
+                            <div class="bg-white border border-slate-200 rounded-xl p-2">
+                                <div class="text-[11px] font-medium text-slate-500">&ang;D</div>
+                                <div id="readoutD" class="text-sm font-bold text-indigo-600 math-font">90.0°</div>
+                            </div>
+                            <div class="bg-teal-50 border border-teal-200 rounded-xl p-2">
+                                <div class="text-[11px] font-semibold text-teal-800">SUM</div>
+                                <div id="readoutSum" class="text-sm font-extrabold text-teal-700 math-font">360.0°</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- SECTION 2: TYPES OF QUADRILATERALS & PROPERTY LAB                     -->
+        <!-- ===================================================================== -->
+        <section id="sec-types" class="hidden space-y-6">
+            <!-- Shape Lab Card -->
+            <!--<div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm"> -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">8.3 Types of Quadrilaterals — Interactive Shape Lab</h2>
+                        <p class="text-xs sm:text-sm text-slate-600">Select a quadrilateral family, drag its control handles, and inspect live geometric invariants.</p>
+                    </div>
+                    <!-- Shape Selector Pills -->
+                    <div class="flex flex-wrap gap-1.5" id="shapeSelectorGroup">
+                        <button onclick="selectShapeType('parallelogram')" data-shape="parallelogram" class="shape-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white cursor-pointer">1. Parallelogram</button>
+                        <button onclick="selectShapeType('rectangle')" data-shape="rectangle" class="shape-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">2. Rectangle</button>
+                        <button onclick="selectShapeType('square')" data-shape="square" class="shape-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">3. Square</button>
+                        <button onclick="selectShapeType('rhombus')" data-shape="rhombus" class="shape-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">4. Rhombus</button>
+                        <button onclick="selectShapeType('kite')" data-shape="kite" class="shape-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">5. Kite</button>
+                        <button onclick="selectShapeType('trapezium')" data-shape="trapezium" class="shape-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">6. Trapezium</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-5">
+                    <!-- Left: Interactive Canvas -->
+                    <div class="lg:col-span-7 flex flex-col gap-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                            <span class="font-medium text-slate-600">Drag glowing handles to resize/skew while preserving shape laws</span>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer font-medium text-slate-700">
+                                    <input type="checkbox" id="chkDiagonals" checked onchange="drawShapeLab()" class="rounded text-indigo-600"> Diagonals
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer font-medium text-slate-700">
+                                    <input type="checkbox" id="chkMarkers" checked onchange="drawShapeLab()" class="rounded text-indigo-600"> Tick/Parallel Marks
+                                </label>
+                                <label class="inline-flex items-center gap-1.5 cursor-pointer font-medium text-slate-700">
+                                    <input type="checkbox" id="chkAngles" checked onchange="drawShapeLab()" class="rounded text-indigo-600"> Angles
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="relative w-full h-80 sm:h-96 bg-slate-900 rounded-2xl overflow-hidden border border-slate-800">
+                            <canvas id="canvasShapeLab"></canvas>
+                        </div>
+
+                        <!-- Live Telemetry Grid -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5">
+                                <div class="text-slate-500">Sides (AB, BC, CD, DA)</div>
+                                <div id="labSides" class="font-bold text-slate-800 math-font mt-0.5">--</div>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5">
+                                <div class="text-slate-500">Angles (&ang;A, &ang;B, &ang;C, &ang;D)</div>
+                                <div id="labAngles" class="font-bold text-indigo-600 math-font mt-0.5">--</div>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5">
+                                <div class="text-slate-500">Diagonals (AC, BD)</div>
+                                <div id="labDiags" class="font-bold text-teal-700 math-font mt-0.5">--</div>
+                            </div>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5">
+                                <div class="text-slate-500">Diag. Intersection &ang;O</div>
+                                <div id="labDiagAngle" class="font-bold text-amber-600 math-font mt-0.5">--</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Definition & Key Properties -->
+                    <div class="lg:col-span-5 flex flex-col justify-between bg-slate-50 rounded-2xl p-5 border border-slate-200">
+                        <div id="shapeDetailsPanel" class="space-y-4">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-200 text-xs text-slate-500">
+                            <strong>NCERT Hierarchy Note:</strong> A square is a rectangle and also a rhombus. Squares, rectangles, and rhombuses are all parallelograms. Every parallelogram is a trapezium, but a kite is <em>not</em> a parallelogram.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Comparison Matrix -->
+            <!--<div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm"> -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Property Comparison Matrix</h3>
+                        <p class="text-xs text-slate-500">Click any column or row to highlight and compare across all 6 Class 9 quadrilaterals.</p>
+                    </div>
+                    <span class="text-xs font-medium text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100">Reference Table</span>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full text-xs sm:text-sm text-left border-collapse" id="comparisonTable">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-800 border-b border-slate-200">
+                                <th class="py-3 px-4 font-bold">Geometric Property</th>
+                                <th class="py-3 px-3 font-bold text-center">Parallelogram</th>
+                                <th class="py-3 px-3 font-bold text-center">Rectangle</th>
+                                <th class="py-3 px-3 font-bold text-center">Square</th>
+                                <th class="py-3 px-3 font-bold text-center">Rhombus</th>
+                                <th class="py-3 px-3 font-bold text-center">Kite</th>
+                                <th class="py-3 px-3 font-bold text-center">Trapezium</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-indigo-50/40 transition">
+                                <td class="py-2.5 px-4 font-semibold text-slate-700">Opposite sides parallel</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-medium">Both pairs</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-medium">Both pairs</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-medium">Both pairs</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-medium">Both pairs</td>
+                                <td class="py-2.5 px-3 text-center text-rose-600">No</td>
+                                <td class="py-2.5 px-3 text-center text-amber-700 font-medium">One pair</td>
+                            </tr>
+                            <tr class="hover:bg-indigo-50/40 transition">
+                                <td class="py-2.5 px-4 font-semibold text-slate-700">All four sides equal</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No (opp. equal)</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No (opp. equal)</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No*</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No</td>
+                            </tr>
+                            <tr class="hover:bg-indigo-50/40 transition">
+                                <td class="py-2.5 px-4 font-semibold text-slate-700">All four angles equal</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No (opp. equal)</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No (opp. equal)</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No (1 pair)</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No</td>
+                            </tr>
+                            <tr class="hover:bg-indigo-50/40 transition">
+                                <td class="py-2.5 px-4 font-semibold text-slate-700">All angles 90°</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No</td>
+                            </tr>
+                            <tr class="hover:bg-indigo-50/40 transition">
+                                <td class="py-2.5 px-4 font-semibold text-slate-700">Diagonals equal</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No**</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No (unless isosceles)</td>
+                            </tr>
+                            <tr class="hover:bg-indigo-50/40 transition">
+                                <td class="py-2.5 px-4 font-semibold text-slate-700">Diagonals perpendicular</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No</td>
+                            </tr>
+                            <tr class="hover:bg-indigo-50/40 transition">
+                                <td class="py-2.5 px-4 font-semibold text-slate-700">Diagonals bisect each other</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-teal-700 font-bold">Yes</td>
+                                <td class="py-2.5 px-3 text-center text-amber-700 font-medium">One bisects other</td>
+                                <td class="py-2.5 px-3 text-center text-slate-500">No</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-2">*A kite has two pairs of equal adjacent sides. **A rhombus has equal diagonals only when it is a square.</p>
+            </div>
+
+            <!-- True/False Hierarchy Quick-Check -->
+            <!--<div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm"> -->
+                <h3 class="text-lg font-bold text-slate-900 mb-1">NCERT Hierarchy Quick-Check (True / False)</h3>
+                <p class="text-xs text-slate-500 mb-4">Test your understanding of quadrilateral relationships from Section 8.3 of your textbook.</p>
+                <div id="tfContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- SECTION 3: ALL 10 CLASS 9 THEOREMS (8.1 TO 8.10)                      -->
+        <!-- ===================================================================== -->
+        <section id="sec-theorems" class="hidden space-y-6">
+            <!--<div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm"> -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">NCERT Theorems (8.1 – 8.10)</h2>
+                        <p class="text-xs sm:text-sm text-slate-600">Select any theorem to explore its interactive geometric diagram and step-by-step formal proof.</p>
+                    </div>
+                    <!--<span class="text-xs font-semibold px-3 py-1 rounded-full bg-teal-50 text-teal-700 border border-teal-200">Includes Mid-Point Theorem &amp; Converse</span>-->
+                </div>
+
+                <!-- Theorem Selector Buttons -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-1.5 my-4" id="theoremTabs">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- Theorem Workbench -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-4">
+                    <!-- Interactive Theorem Canvas -->
+                    <div class="lg:col-span-6 flex flex-col gap-3">
+                        <div class="flex items-center justify-between bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200">
+                            <span id="thmCanvasHint" class="text-xs font-medium text-slate-700">Step through the proof to highlight geometric parts</span>
+                            <div class="flex items-center gap-1.5">
+                                <button onclick="prevProofStep()" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white border border-slate-300 hover:bg-slate-100 cursor-pointer">&larr; Prev</button>
+                                <span id="stepCounterBadge" class="text-xs font-bold text-indigo-700 px-2 math-font">Step 1/4</span>
+                                <button onclick="nextProofStep()" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer">Next &rarr;</button>
+                            </div>
+                        </div>
+
+                        <div class="relative w-full h-80 sm:h-96 bg-slate-900 rounded-2xl overflow-hidden border border-slate-800">
+                            <canvas id="canvasTheorem"></canvas>
+                        </div>
+
+                        <!-- Special Live Mid-Point Readout for 8.9 & 8.10 -->
+                        <div id="midPointLiveBox" class="hidden bg-teal-50 border border-teal-200 rounded-xl p-3 text-xs">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <span class="font-bold text-teal-900">Live Mid-Point Theorem Verification (Drag A, B, or C!):</span>
+                                <span id="midPointRatioBadge" class="px-2 py-0.5 rounded bg-teal-600 text-white font-bold math-font">EF / BC = 0.50</span>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2 mt-2 text-center math-font">
+                                <div class="bg-white p-1.5 rounded border border-teal-100">Length EF = <strong id="valEF">--</strong></div>
+                                <div class="bg-white p-1.5 rounded border border-teal-100">Length BC = <strong id="valBC">--</strong></div>
+                                <div class="bg-white p-1.5 rounded border border-teal-100">&ang;AEF = &ang;ABC = <strong id="valCorrAngle">--</strong></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formal Proof Display -->
+                    <div class="lg:col-span-6 bg-slate-50 rounded-2xl p-5 border border-slate-200 flex flex-col justify-between">
+                        <div id="theoremProofContent" class="space-y-3">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- SECTION 4: IMPORTANT NCERT SOLVED RIDERS / PROPERTIES WITH PROOF      -->
+        <!-- ===================================================================== -->
+        <section id="sec-riders" class="hidden space-y-6">
+            <!--<div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm"> -->
+                <h2 class="text-xl font-bold text-slate-900">Important NCERT Properties &amp; Solved Riders with Proof</h2>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1 mb-5">High-yield NCERT examples and geometric properties frequently asked in Class 9 exams.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5" id="ridersGrid">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================== -->
+        <!-- SECTION 5: INTERACTIVE PRACTICE QUIZ                                  -->
+        <!-- ===================================================================== -->
+        <section id="sec-quiz" class="hidden space-y-6">
+            <!--<div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm"> -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Quadrilaterals Quiz</h2>
+                        <!--<p class="text-xs sm:text-sm text-slate-600">10 exam-style conceptual &amp; numerical problems with instant step-by-step solutions.</p>-->
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-indigo-50 border border-indigo-200 px-3 py-1.5 rounded-xl text-xs font-bold text-indigo-800 math-font">
+                            Score: <span id="quizScore">0</span> / 10
+                        </div>
+                        <button onclick="resetQuiz()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer">
+                            Restart Quiz
+                        </button>
+                    </div>
+                </div>
+
+                <div id="quizContainer" class="mt-5 space-y-5">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer
+    <footer class="bg-white border-t border-slate-200 py-4 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+            <div>Class 9 Mathematics &bull; Chapter 8: Quadrilaterals (NCERT Aligned)</div>
+            <div>Interactive Canvas Simulations &amp; Formal Euclidean Proofs</div>
+        </div>
+    </footer> -->
+
+    <!-- ========================================================================= -->
+    <!-- JAVASCRIPT ENGINE: SIMULATIONS, PROOFS, INTERACTIVITY                     -->
+    <!-- ========================================================================= -->
+    <script>
+        // =========================================================================
+        // 1. GLOBAL NAVIGATION & CANVAS DPI HELPER
+        // =========================================================================
+        let currentSection = 'intro';
+
+        function switchSection(sec) {
+            currentSection = sec;
+            ['intro', 'types', 'theorems', 'riders', 'quiz'].forEach(id => {
+                document.getElementById('sec-' + id).classList.add('hidden');
+                const btn = document.getElementById('nav-' + id);
+                btn.classList.remove('tab-active');
+                btn.classList.add('tab-inactive');
+            });
+            document.getElementById('sec-' + sec).classList.remove('hidden');
+            const activeBtn = document.getElementById('nav-' + sec);
+            activeBtn.classList.remove('tab-inactive');
+            activeBtn.classList.add('tab-active');
+
+            // Trigger resize/redraw for active canvas
+            setTimeout(() => {
+                if (sec === 'intro') resizeAndDrawIntro();
+                if (sec === 'types') resizeAndDrawShapeLab();
+                if (sec === 'theorems') resizeAndDrawTheorem();
+            }, 20);
+        }
+
+        function setupHiDPICanvas(canvas) {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            return { ctx, width: rect.width, height: rect.height };
+        }
+
+        function clamp(val, min, max) {
+            return Math.max(min, Math.min(max, val));
+        }
+
+        function dist(p1, p2) {
+            return Math.hypot(p2.x - p1.x, p2.y - p1.y);
+        }
+
+        function midPoint(p1, p2) {
+            return { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+        }
+
+        function angleBetween(prev, curr, next) {
+            const v1x = prev.x - curr.x;
+            const v1y = prev.y - curr.y;
+            const v2x = next.x - curr.x;
+            const v2y = next.y - curr.y;
+            const dot = v1x * v2x + v1y * v2y;
+            const mag1 = Math.hypot(v1x, v1y);
+            const mag2 = Math.hypot(v2x, v2y);
+            if (mag1 === 0 || mag2 === 0) return 0;
+            const cosTheta = clamp(dot / (mag1 * mag2), -1, 1);
+            return (Math.acos(cosTheta) * 180) / Math.PI;
+        }
+
+        // Check convexity using cross products of consecutive edges
+        function isConvex(pts) {
+            let sign = 0;
+            for (let i = 0; i < 4; i++) {
+                const p0 = pts[i];
+                const p1 = pts[(i + 1) % 4];
+                const p2 = pts[(i + 2) % 4];
+                const cross = (p1.x - p0.x) * (p2.y - p1.y) - (p1.y - p0.y) * (p2.x - p1.x);
+                if (cross !== 0) {
+                    if (sign === 0) sign = Math.sign(cross);
+                    else if (Math.sign(cross) !== sign) return false;
+                }
+            }
+            return true;
+        }
+
+        function drawGrid(ctx, w, h) {
+            ctx.strokeStyle = 'rgba(148, 163, 184, 0.08)';
+            ctx.lineWidth = 1;
+            const step = 28;
+            for (let x = 0; x < w; x += step) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+            }
+            for (let y = 0; y < h; y += step) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+            }
+        }
+
+        function drawVertex(ctx, pt, label, isHovered, color = '#6366f1', offset = { x: 0, y: -16 }) {
+            // Outer glow
+            ctx.beginPath();
+            ctx.arc(pt.x, pt.y, isHovered ? 13 : 9, 0, Math.PI * 2);
+            ctx.fillStyle = isHovered ? 'rgba(99, 102, 241, 0.35)' : 'rgba(99, 102, 241, 0.18)';
+            ctx.fill();
+
+            // Core circle
+            ctx.beginPath();
+            ctx.arc(pt.x, pt.y, 5.5, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#ffffff';
+            ctx.stroke();
+
+            // Label
+            ctx.font = 'bold 14px Inter, sans-serif';
+            ctx.fillStyle = '#f8fafc';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(label, pt.x + offset.x, pt.y + offset.y);
+        }
+
+        function drawAngleArc(ctx, prev, curr, next, radius, color, labelText) {
+            const a1 = Math.atan2(prev.y - curr.y, prev.x - curr.x);
+            const a2 = Math.atan2(next.y - curr.y, next.x - curr.x);
+            let diff = a2 - a1;
+            while (diff <= -Math.PI) diff += Math.PI * 2;
+            while (diff > Math.PI) diff -= Math.PI * 2;
+
+            ctx.beginPath();
+            ctx.moveTo(curr.x, curr.y);
+            ctx.arc(curr.x, curr.y, radius, a1, a1 + diff, diff < 0);
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+
+            if (labelText) {
+                const midA = a1 + diff / 2;
+                const tx = curr.x + Math.cos(midA) * (radius + 16);
+                const ty = curr.y + Math.sin(midA) * (radius + 16);
+                ctx.font = '600 11px JetBrains Mono, monospace';
+                ctx.fillStyle = '#e2e8f0';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(labelText, tx, ty);
+            }
+        }
+
+        // =========================================================================
+        // 2. SECTION 1: ANGLE SUM PROPERTY SIMULATION (canvasIntro)
+        // =========================================================================
+        const canvasIntro = document.getElementById('canvasIntro');
+        let introPts = [];
+        let showIntroDiag = true;
+        let draggingIntroIdx = -1;
+        let hoverIntroIdx = -1;
+
+        function initIntroPoints(w, h) {
+            introPts = [
+                { x: w * 0.25, y: h * 0.25 }, // A (top-left)
+                { x: w * 0.20, y: h * 0.76 }, // B (bottom-left)
+                { x: w * 0.78, y: h * 0.74 }, // C (bottom-right)
+                { x: w * 0.72, y: h * 0.22 }  // D (top-right)
+            ];
+        }
+
+        function resetIntroQuad() {
+            const rect = canvasIntro.parentElement.getBoundingClientRect();
+            initIntroPoints(rect.width, rect.height);
+            drawIntro();
+        }
+
+        function toggleIntroDiagonal() {
+            showIntroDiag = !showIntroDiag;
+            const btn = document.getElementById('btnToggleDiagIntro');
+            btn.textContent = showIntroDiag ? 'Diagonal AC: ON' : 'Diagonal AC: OFF';
+            btn.className = showIntroDiag
+                ? 'px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition cursor-pointer'
+                : 'px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-200 text-slate-700 hover:bg-slate-300 transition cursor-pointer';
+            drawIntro();
+        }
+
+        function resizeAndDrawIntro() {
+            const { width, height } = setupHiDPICanvas(canvasIntro);
+            if (introPts.length === 0) initIntroPoints(width, height);
+            else {
+                introPts.forEach(p => {
+                    p.x = clamp(p.x, 30, width - 30);
+                    p.y = clamp(p.y, 30, height - 30);
+                });
+            }
+            drawIntro();
+        }
+
+        function drawIntro() {
+            const { ctx, width, height } = setupHiDPICanvas(canvasIntro);
+            ctx.clearRect(0, 0, width, height);
+            drawGrid(ctx, width, height);
+
+            const [A, B, C, D] = introPts;
+            const convex = isConvex(introPts);
+            document.getElementById('introWarning').classList.toggle('hidden', convex);
+
+            // Fill triangles if diagonal AC is shown
+            if (showIntroDiag) {
+                // Triangle ADC
+                ctx.beginPath();
+                ctx.moveTo(A.x, A.y); ctx.lineTo(D.x, D.y); ctx.lineTo(C.x, C.y); ctx.closePath();
+                ctx.fillStyle = 'rgba(99, 102, 241, 0.16)';
+                ctx.fill();
+
+                // Triangle ABC
+                ctx.beginPath();
+                ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.closePath();
+                ctx.fillStyle = 'rgba(20, 184, 166, 0.16)';
+                ctx.fill();
+            } else {
+                ctx.beginPath();
+                ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.lineTo(D.x, D.y); ctx.closePath();
+                ctx.fillStyle = 'rgba(99, 102, 241, 0.14)';
+                ctx.fill();
+            }
+
+            // Compute interior angles
+            const angA = angleBetween(D, A, B);
+            const angB = angleBetween(A, B, C);
+            const angC = angleBetween(B, C, D);
+            const angD = angleBetween(C, D, A);
+            const sum = angA + angB + angC + angD;
+
+            // Angle arcs
+            drawAngleArc(ctx, D, A, B, 26, 'rgba(99, 102, 241, 0.35)', angA.toFixed(0) + '°');
+            drawAngleArc(ctx, A, B, C, 26, 'rgba(20, 184, 166, 0.35)', angB.toFixed(0) + '°');
+            drawAngleArc(ctx, B, C, D, 26, 'rgba(245, 158, 11, 0.35)', angC.toFixed(0) + '°');
+            drawAngleArc(ctx, C, D, A, 26, 'rgba(236, 72, 153, 0.35)', angD.toFixed(0) + '°');
+
+            // Diagonal AC
+            if (showIntroDiag) {
+                ctx.save();
+                ctx.setLineDash([6, 5]);
+                ctx.beginPath();
+                ctx.moveTo(A.x, A.y);
+                ctx.lineTo(C.x, C.y);
+                ctx.strokeStyle = '#2dd4bf';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.restore();
+
+                // Triangle labels
+                const cent1 = { x: (A.x + D.x + C.x) / 3, y: (A.y + D.y + C.y) / 3 };
+                const cent2 = { x: (A.x + B.x + C.x) / 3, y: (A.y + B.y + C.y) / 3 };
+                ctx.font = '600 12px Inter, sans-serif';
+                ctx.fillStyle = '#a5b4fc';
+                ctx.textAlign = 'center';
+                ctx.fillText('△ADC = 180°', cent1.x, cent1.y);
+                ctx.fillStyle = '#5eead4';
+                ctx.fillText('△ABC = 180°', cent2.x, cent2.y);
+            }
+
+            // Quadrilateral perimeter
+            ctx.beginPath();
+            ctx.moveTo(A.x, A.y);
+            ctx.lineTo(B.x, B.y);
+            ctx.lineTo(C.x, C.y);
+            ctx.lineTo(D.x, D.y);
+            ctx.closePath();
+            ctx.strokeStyle = '#818cf8';
+            ctx.lineWidth = 2.8;
+            ctx.stroke();
+
+            // Vertices
+            const labels = ['A', 'B', 'C', 'D'];
+            const offsets = [{ x: -14, y: -14 }, { x: -14, y: 16 }, { x: 14, y: 16 }, { x: 14, y: -14 }];
+            introPts.forEach((p, idx) => {
+                drawVertex(ctx, p, labels[idx], hoverIntroIdx === idx || draggingIntroIdx === idx, '#4f46e5', offsets[idx]);
+            });
+
+            // Update telemetry DOM
+            document.getElementById('readoutA').textContent = angA.toFixed(1) + '°';
+            document.getElementById('readoutB').textContent = angB.toFixed(1) + '°';
+            document.getElementById('readoutC').textContent = angC.toFixed(1) + '°';
+            document.getElementById('readoutD').textContent = angD.toFixed(1) + '°';
+            document.getElementById('readoutSum').textContent = sum.toFixed(1) + '°';
+        }
+
+        function getPointerPos(canvas, evt) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+            const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+            return { x: clientX - rect.left, y: clientY - rect.top };
+        }
+
+        function attachDragEvents(canvas, getPoints, onDrag, onHover) {
+            const start = (e) => {
+                const pos = getPointerPos(canvas, e);
+                const pts = getPoints();
+                for (let i = 0; i < pts.length; i++) {
+                    if (dist(pos, pts[i]) < 24) {
+                        e.preventDefault();
+                        onDrag(i, pos, true);
+                        return;
+                    }
+                }
+            };
+            const move = (e) => {
+                const pos = getPointerPos(canvas, e);
+                onDrag(-1, pos, false);
+                if (onHover) {
+                    const pts = getPoints();
+                    let found = -1;
+                    for (let i = 0; i < pts.length; i++) {
+                        if (dist(pos, pts[i]) < 24) { found = i; break; }
+                    }
+                    onHover(found);
+                }
+            };
+            const end = () => onDrag(-2, null, false);
+
+            canvas.addEventListener('mousedown', start);
+            window.addEventListener('mousemove', move);
+            window.addEventListener('mouseup', end);
+            canvas.addEventListener('touchstart', start, { passive: false });
+            window.addEventListener('touchmove', move, { passive: false });
+            window.addEventListener('touchend', end);
+        }
+
+        attachDragEvents(
+            canvasIntro,
+            () => introPts,
+            (idx, pos, isStart) => {
+                if (isStart) { draggingIntroIdx = idx; drawIntro(); }
+                else if (idx === -2) { draggingIntroIdx = -1; drawIntro(); }
+                else if (draggingIntroIdx >= 0 && pos) {
+                    const rect = canvasIntro.parentElement.getBoundingClientRect();
+                    introPts[draggingIntroIdx].x = clamp(pos.x, 28, rect.width - 28);
+                    introPts[draggingIntroIdx].y = clamp(pos.y, 28, rect.height - 28);
+                    drawIntro();
+                }
+            },
+            (hIdx) => {
+                if (hoverIntroIdx !== hIdx) {
+                    hoverIntroIdx = hIdx;
+                    canvasIntro.style.cursor = hIdx >= 0 ? 'grab' : 'default';
+                    drawIntro();
+                }
+            }
+        );
+
+        // =========================================================================
+        // 3. SECTION 2: SHAPE LAB & TYPES OF QUADRILATERALS
+        // =========================================================================
+        const shapeData = {
+            parallelogram: {
+                title: '1. Parallelogram',
+                def: 'A quadrilateral in which both pairs of opposite sides are parallel.',
+                props: [
+                    'Opposite sides are parallel and equal (AB ∥ DC, AD ∥ BC; AB = DC, AD = BC).',
+                    'Opposite angles are equal (∠A = ∠C and ∠B = ∠D).',
+                    'Adjacent angles are supplementary (∠A + ∠B = 180°).',
+                    'Diagonals bisect each other (OA = OC and OB = OD).'
+                ],
+                diagAngle: 'Any angle (not necessarily 90°)'
+            },
+            rectangle: {
+                title: '2. Rectangle',
+                def: 'A parallelogram in which one angle (and hence all four angles) is a right angle (90°).',
+                props: [
+                    'All properties of a parallelogram hold true.',
+                    'Each of the four interior angles is 90°.',
+                    'Diagonals are equal in length (AC = BD) and bisect each other.',
+                    'Diagonals do not necessarily intersect at 90° (unless it is a square).'
+                ],
+                diagAngle: 'Equal diagonals; intersect at acute/obtuse angles'
+            },
+            square: {
+                title: '3. Square',
+                def: 'A rectangle with all four sides equal (also a rhombus with four right angles).',
+                props: [
+                    'All four sides are equal (AB = BC = CD = DA) and all angles are 90°.',
+                    'Opposite sides are parallel.',
+                    'Diagonals are equal, perpendicular to each other (90°), and bisect each other.',
+                    'Each diagonal bisects the vertex angles into 45° each.'
+                ],
+                diagAngle: '90° (Perpendicular & Equal)'
+            },
+            rhombus: {
+                title: '4. Rhombus',
+                def: 'A parallelogram having all four sides equal in length.',
+                props: [
+                    'All four sides are equal (AB = BC = CD = DA).',
+                    'Opposite sides are parallel and opposite angles are equal.',
+                    'Diagonals bisect each other at right angles (90°).',
+                    'Each diagonal bisects a pair of opposite vertex angles.'
+                ],
+                diagAngle: '90° (Perpendicular Bisectors)'
+            },
+            kite: {
+                title: '5. Kite',
+                def: 'A quadrilateral having two distinct pairs of equal adjacent sides (not a parallelogram).',
+                props: [
+                    'Two pairs of adjacent sides are equal (AD = CD and AB = CB).',
+                    'Diagonals intersect at right angles (AC ⊥ BD).',
+                    'The main symmetry diagonal (BD) bisects the other diagonal (AC) and bisects ∠B and ∠D.',
+                    'One pair of opposite angles is equal (∠A = ∠C).'
+                ],
+                diagAngle: '90° (Perpendicular; longer bisects shorter)'
+            },
+            trapezium: {
+                title: '6. Trapezium',
+                def: 'A quadrilateral having exactly one pair of opposite sides parallel.',
+                props: [
+                    'One pair of opposite sides is parallel (AB ∥ DC), called bases.',
+                    'The non-parallel sides (AD, BC) are called legs.',
+                    'Interior angles on the same leg are supplementary (∠A + ∠D = 180°, ∠B + ∠C = 180°).',
+                    'Diagonals do not bisect each other.'
+                ],
+                diagAngle: 'Not perpendicular, do not bisect'
+            }
+        };
+
+        let activeShape = 'parallelogram';
+        // Parametric state for constrained shapes
+        let labParams = {
+            cx: 260, cy: 175,
+            w: 190, h: 120, skew: 45,
+            topW: 110, botW: 220,
+            kiteTop: 75, kiteBot: 135, kiteHalfW: 95
+        };
+        let labHandles = [];
+        let draggingLabHandle = -1;
+        let hoverLabHandle = -1;
+
+        function selectShapeType(type) {
+            activeShape = type;
+            document.querySelectorAll('.shape-btn').forEach(btn => {
+                if (btn.dataset.shape === type) {
+                    btn.className = 'shape-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white cursor-pointer';
+                } else {
+                    btn.className = 'shape-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer';
+                }
+            });
+
+            // Update right panel description
+            const info = shapeData[type];
+            const panel = document.getElementById('shapeDetailsPanel');
+            panel.innerHTML = `
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600">Quadrilateral Family</span>
+                    <h3 class="text-xl font-bold text-slate-900 mt-0.5">${info.title}</h3>
+                    <p class="text-sm text-slate-700 mt-2 bg-white p-3 rounded-xl border border-slate-200">${info.def}</p>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Key NCERT Properties</h4>
+                    <ul class="space-y-2 text-xs sm:text-sm text-slate-700">
+                        ${info.props.map(p => `<li class="flex items-start gap-2"><span class="text-teal-600 font-bold mt-0.5">&#10003;</span><span>${p}</span></li>`).join('')}
+                    </ul>
+                </div>
+            `;
+
+            resizeAndDrawShapeLab();
+        }
+
+        function computeShapeVertices(w, h) {
+            const cx = w / 2;
+            const cy = h / 2;
+            labParams.cx = cx;
+            labParams.cy = cy;
+
+            if (activeShape === 'parallelogram') {
+                const hw = labParams.w / 2;
+                const hh = labParams.h / 2;
+                const sk = labParams.skew;
+                const D = { x: cx - hw + sk, y: cy - hh };
+                const C = { x: cx + hw + sk, y: cy - hh };
+                const B = { x: cx + hw - sk, y: cy + hh };
+                const A = { x: cx - hw - sk, y: cy + hh };
+                labHandles = [C, D]; // Drag C for width/height, D for skew
+                return [A, B, C, D];
+            }
+            if (activeShape === 'rectangle') {
+                const hw = labParams.w / 2;
+                const hh = labParams.h / 2;
+                const D = { x: cx - hw, y: cy - hh };
+                const C = { x: cx + hw, y: cy - hh };
+                const B = { x: cx + hw, y: cy + hh };
+                const A = { x: cx - hw, y: cy + hh };
+                labHandles = [C]; // Drag C to resize width & height
+                return [A, B, C, D];
+            }
+            if (activeShape === 'square') {
+                const half = Math.min(labParams.w, labParams.h) / 2;
+                const D = { x: cx - half, y: cy - half };
+                const C = { x: cx + half, y: cy - half };
+                const B = { x: cx + half, y: cy + half };
+                const A = { x: cx - half, y: cy + half };
+                labHandles = [C];
+                return [A, B, C, D];
+            }
+            if (activeShape === 'rhombus') {
+                // Diamond orientation for clear perpendicular diagonals
+                const rx = labParams.w * 0.65;
+                const ry = labParams.h * 0.85;
+                const D = { x: cx, y: cy - ry };
+                const C = { x: cx + rx, y: cy };
+                const B = { x: cx, y: cy + ry };
+                const A = { x: cx - rx, y: cy };
+                labHandles = [C, D]; // Drag C for horizontal diagonal, D for vertical diagonal
+                return [A, B, C, D];
+            }
+            if (activeShape === 'kite') {
+                const D = { x: cx, y: cy - labParams.kiteTop };
+                const C = { x: cx + labParams.kiteHalfW, y: cy - 15 };
+                const B = { x: cx, y: cy + labParams.kiteBot };
+                const A = { x: cx - labParams.kiteHalfW, y: cy - 15 };
+                labHandles = [C, B]; // Drag C for width, B for lower tail
+                return [A, B, C, D];
+            }
+            // Trapezium: AB || DC
+            const hh = labParams.h / 2;
+            const D = { x: cx - labParams.topW / 2 - 15, y: cy - hh };
+            const C = { x: cx + labParams.topW / 2 + 15, y: cy - hh };
+            const B = { x: cx + labParams.botW / 2, y: cy + hh };
+            const A = { x: cx - labParams.botW / 2, y: cy + hh };
+            labHandles = [C, B];
+            return [A, B, C, D];
+        }
+
+        function drawTickMark(ctx, p1, p2, count) {
+            const mx = (p1.x + p2.x) / 2;
+            const my = (p1.y + p2.y) / 2;
+            const ang = Math.atan2(p2.y - p1.y, p2.x - p1.x) + Math.PI / 2;
+            const len = 7;
+            const spacing = 4;
+            ctx.strokeStyle = '#fbbf24';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < count; i++) {
+                const offset = (i - (count - 1) / 2) * spacing;
+                const ox = mx + Math.cos(ang - Math.PI / 2) * offset;
+                const oy = my + Math.sin(ang - Math.PI / 2) * offset;
+                ctx.beginPath();
+                ctx.moveTo(ox - Math.cos(ang) * len, oy - Math.sin(ang) * len);
+                ctx.lineTo(ox + Math.cos(ang) * len, oy + Math.sin(ang) * len);
+                ctx.stroke();
+            }
+        }
+
+        function drawParallelArrow(ctx, p1, p2, count) {
+            const mx = (p1.x + p2.x) / 2;
+            const my = (p1.y + p2.y) / 2;
+            const ang = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+            ctx.strokeStyle = '#34d399';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < count; i++) {
+                const shift = (i - (count - 1) / 2) * 6;
+                const ax = mx + Math.cos(ang) * shift;
+                const ay = my + Math.sin(ang) * shift;
+                ctx.beginPath();
+                ctx.moveTo(ax - Math.cos(ang - 0.5) * 8, ay - Math.sin(ang - 0.5) * 8);
+                ctx.lineTo(ax, ay);
+                ctx.lineTo(ax - Math.cos(ang + 0.5) * 8, ay - Math.sin(ang + 0.5) * 8);
+                ctx.stroke();
+            }
+        }
+
+        function drawRightAngleSquare(ctx, vertex, p1, p2, size = 12) {
+            const a1 = Math.atan2(p1.y - vertex.y, p1.x - vertex.x);
+            const a2 = Math.atan2(p2.y - vertex.y, p2.x - vertex.x);
+            const c1 = { x: vertex.x + Math.cos(a1) * size, y: vertex.y + Math.sin(a1) * size };
+            const c2 = { x: vertex.x + Math.cos(a2) * size, y: vertex.y + Math.sin(a2) * size };
+            const corner = { x: c1.x + Math.cos(a2) * size, y: c1.y + Math.sin(a2) * size };
+            ctx.beginPath();
+            ctx.moveTo(c1.x, c1.y);
+            ctx.lineTo(corner.x, corner.y);
+            ctx.lineTo(c2.x, c2.y);
+            ctx.strokeStyle = '#f472b6';
+            ctx.lineWidth = 1.8;
+            ctx.stroke();
+        }
+
+        function lineIntersection(p1, p2, p3, p4) {
+            const denom = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
+            if (Math.abs(denom) < 1e-6) return midPoint(p1, p2);
+            const t = ((p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x)) / denom;
+            return { x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) };
+        }
+
+        function resizeAndDrawShapeLab() {
+            setupHiDPICanvas(canvasShapeLab);
+            drawShapeLab();
+        }
+
+        function drawShapeLab() {
+            const { ctx, width, height } = setupHiDPICanvas(canvasShapeLab);
+            ctx.clearRect(0, 0, width, height);
+            drawGrid(ctx, width, height);
+
+            const pts = computeShapeVertices(width, height);
+            const [A, B, C, D] = pts;
+            const showDiags = document.getElementById('chkDiagonals').checked;
+            const showMarks = document.getElementById('chkMarkers').checked;
+            const showAngles = document.getElementById('chkAngles').checked;
+
+            // Fill polygon
+            ctx.beginPath();
+            ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.lineTo(D.x, D.y); ctx.closePath();
+            ctx.fillStyle = 'rgba(99, 102, 241, 0.16)';
+            ctx.fill();
+
+            // Angles
+            const angA = angleBetween(D, A, B);
+            const angB = angleBetween(A, B, C);
+            const angC = angleBetween(B, C, D);
+            const angD = angleBetween(C, D, A);
+
+            if (showAngles) {
+                const isAll90 = (activeShape === 'rectangle' || activeShape === 'square');
+                if (isAll90) {
+                    drawRightAngleSquare(ctx, A, D, B, 14);
+                    drawRightAngleSquare(ctx, B, A, C, 14);
+                    drawRightAngleSquare(ctx, C, B, D, 14);
+                    drawRightAngleSquare(ctx, D, C, A, 14);
+                } else {
+                    drawAngleArc(ctx, D, A, B, 22, 'rgba(99, 102, 241, 0.35)', angA.toFixed(0) + '°');
+                    drawAngleArc(ctx, A, B, C, 22, 'rgba(20, 184, 166, 0.35)', angB.toFixed(0) + '°');
+                    drawAngleArc(ctx, B, C, D, 22, 'rgba(245, 158, 11, 0.35)', angC.toFixed(0) + '°');
+                    drawAngleArc(ctx, C, D, A, 22, 'rgba(236, 72, 153, 0.35)', angD.toFixed(0) + '°');
+                }
+            }
+
+            // Diagonals
+            const O = lineIntersection(A, C, B, D);
+            const diagAngle = angleBetween(A, O, B);
+            if (showDiags) {
+                ctx.save();
+                ctx.setLineDash([5, 5]);
+                ctx.strokeStyle = '#2dd4bf';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(C.x, C.y); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(B.x, B.y); ctx.lineTo(D.x, D.y); ctx.stroke();
+                ctx.restore();
+
+                if (['square', 'rhombus', 'kite'].includes(activeShape)) {
+                    drawRightAngleSquare(ctx, O, C, D, 11);
+                }
+
+                // Center O dot
+                ctx.beginPath(); ctx.arc(O.x, O.y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#fbbf24'; ctx.fill();
+                ctx.font = 'bold 12px Inter, sans-serif';
+                ctx.fillStyle = '#fde68a';
+                ctx.fillText('O', O.x + 10, O.y - 10);
+            }
+
+            // Perimeter
+            ctx.beginPath();
+            ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.lineTo(D.x, D.y); ctx.closePath();
+            ctx.strokeStyle = '#818cf8';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Geometric tick/parallel marks
+            if (showMarks) {
+                if (activeShape === 'parallelogram' || activeShape === 'rectangle') {
+                    drawTickMark(ctx, A, B, 1); drawTickMark(ctx, D, C, 1);
+                    drawTickMark(ctx, A, D, 2); drawTickMark(ctx, B, C, 2);
+                    drawParallelArrow(ctx, A, B, 1); drawParallelArrow(ctx, D, C, 1);
+                    drawParallelArrow(ctx, A, D, 2); drawParallelArrow(ctx, B, C, 2);
+                } else if (activeShape === 'square' || activeShape === 'rhombus') {
+                    drawTickMark(ctx, A, B, 1); drawTickMark(ctx, B, C, 1);
+                    drawTickMark(ctx, C, D, 1); drawTickMark(ctx, D, A, 1);
+                    drawParallelArrow(ctx, A, B, 1); drawParallelArrow(ctx, D, C, 1);
+                } else if (activeShape === 'kite') {
+                    drawTickMark(ctx, D, A, 1); drawTickMark(ctx, D, C, 1);
+                    drawTickMark(ctx, A, B, 2); drawTickMark(ctx, C, B, 2);
+                } else if (activeShape === 'trapezium') {
+                    drawParallelArrow(ctx, A, B, 1); drawParallelArrow(ctx, D, C, 1);
+                }
+            }
+
+            // Draw vertices & highlight draggable handles
+            const vNames = ['A', 'B', 'C', 'D'];
+            const vOff = [{ x: -15, y: 14 }, { x: 15, y: 14 }, { x: 15, y: -14 }, { x: -15, y: -14 }];
+            pts.forEach((pt, idx) => {
+                const isHandle = labHandles.includes(pt);
+                const hIdx = labHandles.indexOf(pt);
+                const active = isHandle && (hoverLabHandle === hIdx || draggingLabHandle === hIdx);
+                drawVertex(ctx, pt, vNames[idx], active, isHandle ? '#14b8a6' : '#6366f1', vOff[idx]);
+            });
+
+            // Telemetry update (scaled nicely to cm units)
+            const sAB = (dist(A, B) / 35).toFixed(1);
+            const sBC = (dist(B, C) / 35).toFixed(1);
+            const sCD = (dist(C, D) / 35).toFixed(1);
+            const sDA = (dist(D, A) / 35).toFixed(1);
+            document.getElementById('labSides').textContent = `${sAB}, ${sBC}, ${sCD}, ${sDA}`;
+            document.getElementById('labAngles').textContent = `${angA.toFixed(0)}°, ${angB.toFixed(0)}°, ${angC.toFixed(0)}°, ${angD.toFixed(0)}°`;
+            document.getElementById('labDiags').textContent = `AC=${(dist(A, C) / 35).toFixed(1)}, BD=${(dist(B, D) / 35).toFixed(1)}`;
+            document.getElementById('labDiagAngle').textContent = `${diagAngle.toFixed(1)}°`;
+        }
+
+        attachDragEvents(
+            canvasShapeLab,
+            () => labHandles,
+            (idx, pos, isStart) => {
+                if (isStart) { draggingLabHandle = idx; drawShapeLab(); }
+                else if (idx === -2) { draggingLabHandle = -1; drawShapeLab(); }
+                else if (draggingLabHandle >= 0 && pos) {
+                    const rect = canvasShapeLab.parentElement.getBoundingClientRect();
+                    const cx = rect.width / 2;
+                    const cy = rect.height / 2;
+                    const dx = pos.x - cx;
+                    const dy = cy - pos.y;
+
+                    if (activeShape === 'parallelogram') {
+                        if (draggingLabHandle === 0) { // C
+                            labParams.w = clamp((dx - labParams.skew) * 2, 110, rect.width - 140);
+                            labParams.h = clamp(dy * 2, 80, rect.height - 80);
+                        } else { // D (skew)
+                            labParams.skew = clamp(dx + labParams.w / 2, -80, 90);
+                        }
+                    } else if (activeShape === 'rectangle') {
+                        labParams.w = clamp(dx * 2, 100, rect.width - 100);
+                        labParams.h = clamp(dy * 2, 80, rect.height - 80);
+                    } else if (activeShape === 'square') {
+                        const s = clamp(Math.max(dx, dy) * 2, 90, Math.min(rect.width, rect.height) - 80);
+                        labParams.w = s; labParams.h = s;
+                    } else if (activeShape === 'rhombus') {
+                        if (draggingLabHandle === 0) labParams.w = clamp(dx / 0.65, 90, rect.width - 100);
+                        else labParams.h = clamp(dy / 0.85, 80, rect.height - 80);
+                    } else if (activeShape === 'kite') {
+                        if (draggingLabHandle === 0) labParams.kiteHalfW = clamp(dx, 55, rect.width * 0.36);
+                        else labParams.kiteBot = clamp(pos.y - cy, 65, rect.height * 0.42);
+                    } else if (activeShape === 'trapezium') {
+                        if (draggingLabHandle === 0) {
+                            labParams.topW = clamp((dx - 15) * 2, 70, 220);
+                            labParams.h = clamp(dy * 2, 80, rect.height - 80);
+                        } else {
+                            labParams.botW = clamp(dx * 2, 130, rect.width - 90);
+                        }
+                    }
+                    drawShapeLab();
+                }
+            },
+            (hIdx) => {
+                if (hoverLabHandle !== hIdx) {
+                    hoverLabHandle = hIdx;
+                    canvasShapeLab.style.cursor = hIdx >= 0 ? 'grab' : 'default';
+                    drawShapeLab();
+                }
+            }
+        );
+
+        // True/False Quick-Check Data
+        const tfItems = [
+            { q: 'Every square is a rhombus.', ans: true, exp: 'True! A square has all four sides equal, which is the defining property of a rhombus.' },
+            { q: 'Every parallelogram is a trapezium.', ans: true, exp: 'True! A trapezium needs at least one pair of parallel sides; a parallelogram has both pairs parallel.' },
+            { q: 'A kite is a parallelogram.', ans: false, exp: 'False! Opposite sides of a kite are not parallel; adjacent pairs are equal.' },
+            { q: 'Every rectangle is a square.', ans: false, exp: 'False! A rectangle does not necessarily have all four sides equal.' },
+            { q: 'The diagonals of a rhombus bisect each other at 90°.', ans: true, exp: 'True! Proven via SSS triangle congruence and linear pair of angles.' },
+            { q: 'A trapezium is a parallelogram.', ans: false, exp: 'False! A trapezium only has one pair of parallel sides, whereas a parallelogram requires both pairs.' }
+        ];
+
+        function renderTFCheck() {
+            const container = document.getElementById('tfContainer');
+            container.innerHTML = tfItems.map((item, i) => `
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex flex-col justify-between gap-2">
+                    <div class="text-xs sm:text-sm font-semibold text-slate-800">${i + 1}. "${item.q}"</div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="checkTF(${i}, true)" class="px-3 py-1 rounded-lg text-xs font-semibold bg-white border border-slate-300 hover:bg-teal-50 hover:border-teal-400 cursor-pointer">True</button>
+                        <button onclick="checkTF(${i}, false)" class="px-3 py-1 rounded-lg text-xs font-semibold bg-white border border-slate-300 hover:bg-rose-50 hover:border-rose-400 cursor-pointer">False</button>
+                        <span id="tf-res-${i}" class="text-xs font-medium ml-1"></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function checkTF(idx, choice) {
+            const item = tfItems[idx];
+            const el = document.getElementById(`tf-res-${idx}`);
+            if (choice === item.ans) {
+                el.innerHTML = `<span class="text-teal-700 font-semibold">&#10003; ${item.exp}</span>`;
+            } else {
+                el.innerHTML = `<span class="text-rose-600 font-semibold">&#10007; ${item.exp}</span>`;
+            }
+        }
+
+        // =========================================================================
+        // 4. SECTION 3: ALL 10 CLASS 9 THEOREMS (8.1 TO 8.10)
+        // =========================================================================
+        const theoremsData = [
+            {
+                id: '8.1',
+                title: 'Theorem 8.1: Diagonal of a Parallelogram',
+                statement: 'A diagonal of a parallelogram divides it into two congruent triangles.',
+                given: 'ABCD is a parallelogram and AC is a diagonal.',
+                toProve: '△ABC ≅ △CDA',
+                steps: [
+                    { text: 'Consider parallelogram ABCD with diagonal AC dividing it into △ABC and △CDA.', highlight: 'diag' },
+                    { text: 'Since BC ∥ AD and AC is a transversal: ∠BCA = ∠DAC (Alternate interior angles).', highlight: 'alt1' },
+                    { text: 'Since AB ∥ DC and AC is a transversal: ∠BAC = ∠DCA (Alternate interior angles).', highlight: 'alt2' },
+                    { text: 'AC = CA (Common side). Therefore, by ASA congruence rule: △ABC ≅ △CDA.', highlight: 'congruent' }
+                ]
+            },
+            {
+                id: '8.2',
+                title: 'Theorem 8.2: Opposite Sides of a Parallelogram',
+                statement: 'In a parallelogram, opposite sides are equal.',
+                given: 'ABCD is a parallelogram (AB ∥ DC and AD ∥ BC).',
+                toProve: 'AB = DC and AD = BC',
+                steps: [
+                    { text: 'Join diagonal AC to form △ABC and △CDA.', highlight: 'diag' },
+                    { text: 'By Theorem 8.1 (ASA rule), △ABC ≅ △CDA.', highlight: 'congruent' },
+                    { text: 'Since corresponding parts of congruent triangles are equal (CPCT):', highlight: 'oppSides' },
+                    { text: 'AB = DC and AD = BC. Hence Proved.', highlight: 'oppSides' }
+                ]
+            },
+            {
+                id: '8.3',
+                title: 'Theorem 8.3: Converse of Opposite Sides Equal',
+                statement: 'If each pair of opposite sides of a quadrilateral is equal, then it is a parallelogram.',
+                given: 'A quadrilateral ABCD in which AB = CD and AD = BC.',
+                toProve: 'ABCD is a parallelogram (AB ∥ CD and AD ∥ BC).',
+                steps: [
+                    { text: 'Draw diagonal AC. In △ABC and △CDA: AB = CD, BC = DA (Given), and AC = CA (Common).', highlight: 'oppSides' },
+                    { text: 'By SSS congruence rule, △ABC ≅ △CDA.', highlight: 'congruent' },
+                    { text: 'By CPCT: ∠BAC = ∠DCA and ∠BCA = ∠DAC.', highlight: 'alt1' },
+                    { text: 'Since alternate interior angles are equal, AB ∥ CD and BC ∥ AD. Thus, ABCD is a parallelogram.', highlight: 'alt2' }
+                ]
+            },
+            {
+                id: '8.4',
+                title: 'Theorem 8.4: Opposite Angles of a Parallelogram',
+                statement: 'In a parallelogram, opposite angles are equal.',
+                given: 'ABCD is a parallelogram.',
+                toProve: '∠A = ∠C and ∠B = ∠D',
+                steps: [
+                    { text: 'Since AB ∥ DC and AD is a transversal, ∠A + ∠D = 180° (Co-interior angles).', highlight: 'coInt1' },
+                    { text: 'Since AD ∥ BC and DC is a transversal, ∠D + ∠C = 180° (Co-interior angles).', highlight: 'coInt2' },
+                    { text: 'Equating both: ∠A + ∠D = ∠D + ∠C ⇒ ∠A = ∠C.', highlight: 'oppAngles' },
+                    { text: 'Similarly, ∠B = ∠D. Hence opposite angles of a parallelogram are equal.', highlight: 'oppAngles' }
+                ]
+            },
+            {
+                id: '8.5',
+                title: 'Theorem 8.5: Converse of Opposite Angles Equal',
+                statement: 'If in a quadrilateral, each pair of opposite angles is equal, then it is a parallelogram.',
+                given: 'A quadrilateral ABCD where ∠A = ∠C and ∠B = ∠D.',
+                toProve: 'ABCD is a parallelogram.',
+                steps: [
+                    { text: 'By Angle Sum Property of a quadrilateral: ∠A + ∠B + ∠C + ∠D = 360°.', highlight: 'oppAngles' },
+                    { text: 'Substitute ∠C = ∠A and ∠D = ∠B: 2(∠A + ∠B) = 360° ⇒ ∠A + ∠B = 180°.', highlight: 'coInt1' },
+                    { text: 'Since co-interior angles ∠A and ∠B sum to 180°, AD ∥ BC.', highlight: 'coInt1' },
+                    { text: 'Similarly, ∠A + ∠D = 180° ⇒ AB ∥ DC. Hence ABCD is a parallelogram.', highlight: 'coInt2' }
+                ]
+            },
+            {
+                id: '8.6',
+                title: 'Theorem 8.6: Diagonals Bisect Each Other',
+                statement: 'The diagonals of a parallelogram bisect each other.',
+                given: 'ABCD is a parallelogram whose diagonals AC and BD intersect at O.',
+                toProve: 'OA = OC and OB = OD',
+                steps: [
+                    { text: 'Draw both diagonals AC and BD intersecting at point O.', highlight: 'bothDiags' },
+                    { text: 'In △AOB and △COD: ∠OAB = ∠OCD (Alternate interior angles, AB ∥ DC).', highlight: 'diagTriangles' },
+                    { text: 'AB = CD (Opposite sides of parallelogram) and ∠OBA = ∠ODC (Alternate angles).', highlight: 'diagTriangles' },
+                    { text: 'By ASA rule, △AOB ≅ △COD. By CPCT: OA = OC and OB = OD.', highlight: 'bisectMarks' }
+                ]
+            },
+            {
+                id: '8.7',
+                title: 'Theorem 8.7: Converse of Diagonals Bisecting',
+                statement: 'If the diagonals of a quadrilateral bisect each other, then it is a parallelogram.',
+                given: 'Quadrilateral ABCD where diagonals AC and BD bisect each other at O (OA = OC, OB = OD).',
+                toProve: 'ABCD is a parallelogram.',
+                steps: [
+                    { text: 'In △AOB and △COD: OA = OC and OB = OD (Given).', highlight: 'bisectMarks' },
+                    { text: '∠AOB = ∠COD (Vertically opposite angles).', highlight: 'diagTriangles' },
+                    { text: 'By SAS congruence rule, △AOB ≅ △COD ⇒ ∠ABO = ∠CDO (CPCT).', highlight: 'diagTriangles' },
+                    { text: 'Since alternate angles are equal, AB ∥ CD. Similarly BC ∥ AD. Thus ABCD is a parallelogram.', highlight: 'bothDiags' }
+                ]
+            },
+            {
+                id: '8.8',
+                title: 'Theorem 8.8: One Pair Equal & Parallel',
+                statement: 'A quadrilateral is a parallelogram if a pair of opposite sides is equal and parallel.',
+                given: 'Quadrilateral ABCD in which AB = CD and AB ∥ CD.',
+                toProve: 'ABCD is a parallelogram.',
+                steps: [
+                    { text: 'Join diagonal AC. Consider △ABC and △CDA.', highlight: 'diag' },
+                    { text: 'AB = CD (Given) and AC = CA (Common side).', highlight: 'onePair' },
+                    { text: '∠BAC = ∠DCA (Alternate interior angles, since AB ∥ CD).', highlight: 'alt2' },
+                    { text: 'By SAS rule, △ABC ≅ △CDA ⇒ ∠BCA = ∠DAC (CPCT) ⇒ BC ∥ AD. Hence ABCD is a parallelogram.', highlight: 'congruent' }
+                ]
+            },
+            {
+                id: '8.9',
+                title: 'Theorem 8.9: The Mid-Point Theorem',
+                statement: 'The line segment joining the mid-points of two sides of a triangle is parallel to the third side and equal to half of it.',
+                given: 'In △ABC, E and F are mid-points of AB and AC respectively.',
+                toProve: 'EF ∥ BC and EF = ½ BC',
+                steps: [
+                    { text: 'Construction: Extend EF to D such that EF = FD, and join CD (forming CD ∥ BA).', highlight: 'mptConstruct' },
+                    { text: 'In △AEF and △CDF: AF = CF (F is mid-point), ∠AFE = ∠CFD (VOA), and ∠EAF = ∠DCF (Alt. angles, BA ∥ CD).', highlight: 'mptTriangles' },
+                    { text: 'By ASA rule, △AEF ≅ △CDF ⇒ EF = DF and AE = CD (CPCT). Since AE = BE, BE = CD and BE ∥ CD.', highlight: 'mptPara' },
+                    { text: 'By Theorem 8.8, BCDE is a parallelogram ⇒ ED ∥ BC (so EF ∥ BC) and EF = ½ ED = ½ BC.', highlight: 'mptFinal' }
+                ]
+            },
+            {
+                id: '8.10',
+                title: 'Theorem 8.10: Converse of Mid-Point Theorem',
+                statement: 'The line drawn through the mid-point of one side of a triangle, parallel to another side bisects the third side.',
+                given: 'In △ABC, E is the mid-point of AB, and line l passing through E is parallel to BC, intersecting AC at F.',
+                toProve: 'AF = CF (F is the mid-point of AC).',
+                steps: [
+                    { text: 'Construction: Through C, draw a line CM ∥ BA intersecting line l (extended) at D.', highlight: 'mptConstruct' },
+                    { text: 'Since ED ∥ BC and EB ∥ DC, quadrilateral BCDE is a parallelogram ⇒ BE = CD.', highlight: 'mptPara' },
+                    { text: 'Since E is the mid-point of AB, AE = BE ⇒ AE = CD.', highlight: 'mptTriangles' },
+                    { text: 'In △AEF and △CDF: ∠AEF = ∠CDF & ∠EAF = ∠DCF (Alt. angles), AE = CD ⇒ △AEF ≅ △CDF (ASA) ⇒ AF = CF.', highlight: 'mptFinal' }
+                ]
+            }
+        ];
+
+        let activeThmIdx = 0;
+        let activeProofStep = 0;
+        // Draggable triangle vertices for Theorem 8.9 & 8.10
+        let mptTri = [];
+        let draggingMptIdx = -1;
+
+        function initTheoremTabs() {
+            const container = document.getElementById('theoremTabs');
+            container.innerHTML = theoremsData.map((t, idx) => `
+                <button onclick="selectTheorem(${idx})" id="thm-btn-${idx}"
+                    class="py-2 px-2 rounded-xl text-xs font-bold border transition cursor-pointer ${idx === 0 ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'}">
+                    Thm ${t.id}
+                </button>
+            `).join('');
+            selectTheorem(0);
+        }
+
+        function selectTheorem(idx) {
+            activeThmIdx = idx;
+            activeProofStep = 0;
+            theoremsData.forEach((_, i) => {
+                const btn = document.getElementById(`thm-btn-${i}`);
+                btn.className = i === idx
+                    ? 'py-2 px-2 rounded-xl text-xs font-bold border transition cursor-pointer bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                    : 'py-2 px-2 rounded-xl text-xs font-bold border transition cursor-pointer bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100';
+            });
+
+            const isMPT = idx >= 8;
+            document.getElementById('midPointLiveBox').classList.toggle('hidden', !isMPT);
+            document.getElementById('thmCanvasHint').textContent = isMPT
+                ? 'Drag triangle vertices A, B, C & step through proof!'
+                : 'Use Next/Prev to step through the visual proof';
+
+            renderTheoremProof();
+            resizeAndDrawTheorem();
+        }
+
+        function nextProofStep() {
+            const max = theoremsData[activeThmIdx].steps.length - 1;
+            activeProofStep = (activeProofStep + 1) % (max + 1);
+            renderTheoremProof();
+            drawTheoremCanvas();
+        }
+
+        function prevProofStep() {
+            const max = theoremsData[activeThmIdx].steps.length - 1;
+            activeProofStep = (activeProofStep - 1 + (max + 1)) % (max + 1);
+            renderTheoremProof();
+            drawTheoremCanvas();
+        }
+
+        function setProofStep(stepIdx) {
+            activeProofStep = stepIdx;
+            renderTheoremProof();
+            drawTheoremCanvas();
+        }
+
+        function renderTheoremProof() {
+            const thm = theoremsData[activeThmIdx];
+            document.getElementById('stepCounterBadge').textContent = `Step ${activeProofStep + 1}/${thm.steps.length}`;
+
+            const panel = document.getElementById('theoremProofContent');
+            panel.innerHTML = `
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">NCERT Theorem ${thm.id}</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-0.5">${thm.title}</h3>
+                    <p class="text-sm font-medium text-slate-800 bg-white p-3 rounded-xl border border-indigo-100 mt-2 italic">"${thm.statement}"</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    <div class="bg-white p-2.5 rounded-xl border border-slate-200">
+                        <strong class="text-slate-900">Given:</strong> <span class="text-slate-700">${thm.given}</span>
+                    </div>
+                    <div class="bg-white p-2.5 rounded-xl border border-slate-200">
+                        <strong class="text-teal-800">To Prove:</strong> <span class="text-teal-900 font-semibold math-font">${thm.toProve}</span>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Step-by-Step Proof (Click any step)</div>
+                    ${thm.steps.map((s, i) => `
+                        <div onclick="setProofStep(${i})" class="p-2.5 rounded-xl text-xs sm:text-sm transition cursor-pointer border ${i === activeProofStep ? 'proof-step-active border-indigo-200 text-slate-900 font-medium' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100'}">
+                            <span class="font-bold text-indigo-600 mr-1.5">Step ${i + 1}:</span> ${s.text}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        const canvasTheorem = document.getElementById('canvasTheorem');
+
+        function resizeAndDrawTheorem() {
+            const { width, height } = setupHiDPICanvas(canvasTheorem);
+            if (mptTri.length === 0) {
+                mptTri = [
+                    { x: width * 0.42, y: height * 0.18 }, // A
+                    { x: width * 0.18, y: height * 0.80 }, // B
+                    { x: width * 0.72, y: height * 0.80 }  // C
+                ];
+            } else {
+                mptTri.forEach(p => {
+                    p.x = clamp(p.x, 30, width - 30);
+                    p.y = clamp(p.y, 30, height - 30);
+                });
+            }
+            drawTheoremCanvas();
+        }
+
+        function drawTheoremCanvas() {
+            const { ctx, width, height } = setupHiDPICanvas(canvasTheorem);
+            ctx.clearRect(0, 0, width, height);
+            drawGrid(ctx, width, height);
+
+            const thm = theoremsData[activeThmIdx];
+            const hl = thm.steps[activeProofStep].highlight;
+
+            if (activeThmIdx >= 8) {
+                // Draw Mid-Point Theorem (8.9) & Converse (8.10)
+                const [A, B, C] = mptTri;
+                const E = midPoint(A, B);
+                const F = midPoint(A, C);
+                // D such that EF = FD (so D = F + (F - E))
+                const D = { x: F.x + (F.x - E.x), y: F.y + (F.y - E.y) };
+
+                // Highlight congruent triangles AEF & CDF
+                if (hl === 'mptTriangles' || hl === 'mptFinal') {
+                    ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(E.x, E.y); ctx.lineTo(F.x, F.y); ctx.closePath();
+                    ctx.fillStyle = 'rgba(99, 102, 241, 0.28)'; ctx.fill();
+
+                    ctx.beginPath(); ctx.moveTo(C.x, C.y); ctx.lineTo(D.x, D.y); ctx.lineTo(F.x, F.y); ctx.closePath();
+                    ctx.fillStyle = 'rgba(20, 184, 166, 0.28)'; ctx.fill();
+                }
+
+                // Highlight Parallelogram BCDE
+                if (hl === 'mptPara') {
+                    ctx.beginPath(); ctx.moveTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.lineTo(D.x, D.y); ctx.lineTo(E.x, E.y); ctx.closePath();
+                    ctx.fillStyle = 'rgba(245, 158, 11, 0.2)'; ctx.fill();
+                }
+
+                // Main Triangle ABC
+                ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.closePath();
+                ctx.strokeStyle = '#818cf8'; ctx.lineWidth = 2.5; ctx.stroke();
+
+                // Midsegment EF
+                ctx.beginPath(); ctx.moveTo(E.x, E.y); ctx.lineTo(F.x, F.y);
+                ctx.strokeStyle = '#2dd4bf'; ctx.lineWidth = 3; ctx.stroke();
+
+                // Auxiliary construction FD and CD
+                if (['mptConstruct', 'mptTriangles', 'mptPara', 'mptFinal'].includes(hl)) {
+                    ctx.save();
+                    ctx.setLineDash([5, 4]);
+                    ctx.strokeStyle = '#fbbf24';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.moveTo(F.x, F.y); ctx.lineTo(D.x, D.y); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(C.x, C.y); ctx.lineTo(D.x, D.y); ctx.stroke();
+                    ctx.restore();
+                    drawVertex(ctx, D, 'D', false, '#f59e0b', { x: 14, y: -10 });
+                }
+
+                // Tick marks for midpoints
+                drawTickMark(ctx, A, E, 1); drawTickMark(ctx, E, B, 1);
+                drawTickMark(ctx, A, F, 2); drawTickMark(ctx, F, C, 2);
+                drawParallelArrow(ctx, E, F, 1); drawParallelArrow(ctx, B, C, 1);
+
+                // Vertices
+                drawVertex(ctx, A, 'A', draggingMptIdx === 0, '#4f46e5', { x: 0, y: -15 });
+                drawVertex(ctx, B, 'B', draggingMptIdx === 1, '#4f46e5', { x: -14, y: 15 });
+                drawVertex(ctx, C, 'C', draggingMptIdx === 2, '#4f46e5', { x: 14, y: 15 });
+                drawVertex(ctx, E, 'E', false, '#14b8a6', { x: -15, y: -4 });
+                drawVertex(ctx, F, 'F', false, '#14b8a6', { x: 14, y: -10 });
+
+                // Update live readout
+                const lenEF = (dist(E, F) / 30).toFixed(2);
+                const lenBC = (dist(B, C) / 30).toFixed(2);
+                const corrAng = angleBetween(A, E, F).toFixed(1);
+                document.getElementById('valEF').textContent = lenEF + ' cm';
+                document.getElementById('valBC').textContent = lenBC + ' cm';
+                document.getElementById('valCorrAngle').textContent = corrAng + '°';
+                return;
+            }
+
+            // Standard Parallelogram / Quadrilateral geometry for Theorems 8.1 – 8.8
+            const cx = width / 2;
+            const cy = height / 2;
+            const w = Math.min(width * 0.56, 260);
+            const h = Math.min(height * 0.48, 160);
+            const sk = 42;
+
+            const D = { x: cx - w / 2 + sk, y: cy - h / 2 };
+            const C = { x: cx + w / 2 + sk, y: cy - h / 2 };
+            const B = { x: cx + w / 2 - sk, y: cy + h / 2 };
+            const A = { x: cx - w / 2 - sk, y: cy + h / 2 };
+            const O = midPoint(A, C);
+
+            // Triangle highlights
+            if (hl === 'congruent') {
+                ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.closePath();
+                ctx.fillStyle = 'rgba(20, 184, 166, 0.25)'; ctx.fill();
+                ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(D.x, D.y); ctx.lineTo(C.x, C.y); ctx.closePath();
+                ctx.fillStyle = 'rgba(99, 102, 241, 0.25)'; ctx.fill();
+            } else if (hl === 'diagTriangles') {
+                ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(O.x, O.y); ctx.closePath();
+                ctx.fillStyle = 'rgba(20, 184, 166, 0.28)'; ctx.fill();
+                ctx.beginPath(); ctx.moveTo(C.x, C.y); ctx.lineTo(D.x, D.y); ctx.lineTo(O.x, O.y); ctx.closePath();
+                ctx.fillStyle = 'rgba(99, 102, 241, 0.28)'; ctx.fill();
+            } else {
+                ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.lineTo(D.x, D.y); ctx.closePath();
+                ctx.fillStyle = 'rgba(99, 102, 241, 0.12)'; ctx.fill();
+            }
+
+            // Perimeter
+            ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.lineTo(D.x, D.y); ctx.closePath();
+            ctx.strokeStyle = '#818cf8'; ctx.lineWidth = 2.8; ctx.stroke();
+
+            // Highlight specific edges
+            if (hl === 'oppSides' || hl === 'onePair') {
+                ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(D.x, D.y); ctx.lineTo(C.x, C.y); ctx.stroke();
+                drawTickMark(ctx, A, B, 1); drawTickMark(ctx, D, C, 1);
+                if (hl === 'oppSides') {
+                    ctx.strokeStyle = '#34d399';
+                    ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(D.x, D.y); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(B.x, B.y); ctx.lineTo(C.x, C.y); ctx.stroke();
+                    drawTickMark(ctx, A, D, 2); drawTickMark(ctx, B, C, 2);
+                } else {
+                    drawParallelArrow(ctx, A, B, 1); drawParallelArrow(ctx, D, C, 1);
+                }
+            }
+
+            // Diagonals
+            if (['diag', 'alt1', 'alt2', 'congruent', 'onePair'].includes(hl)) {
+                ctx.save(); ctx.setLineDash([5, 5]); ctx.strokeStyle = '#2dd4bf'; ctx.lineWidth = 2.2;
+                ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(C.x, C.y); ctx.stroke();
+                ctx.restore();
+            }
+            if (['bothDiags', 'diagTriangles', 'bisectMarks'].includes(hl)) {
+                ctx.save(); ctx.setLineDash([5, 5]); ctx.strokeStyle = '#2dd4bf'; ctx.lineWidth = 2.2;
+                ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(C.x, C.y); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(B.x, B.y); ctx.lineTo(D.x, D.y); ctx.stroke();
+                ctx.restore();
+
+                ctx.beginPath(); ctx.arc(O.x, O.y, 4.5, 0, Math.PI * 2);
+                ctx.fillStyle = '#fbbf24'; ctx.fill();
+                ctx.font = 'bold 12px Inter, sans-serif'; ctx.fillStyle = '#fde68a';
+                ctx.fillText('O', O.x, O.y - 14);
+
+                if (hl === 'bisectMarks') {
+                    drawTickMark(ctx, A, O, 1); drawTickMark(ctx, O, C, 1);
+                    drawTickMark(ctx, B, O, 2); drawTickMark(ctx, O, D, 2);
+                }
+            }
+
+            // Angle highlights
+            if (hl === 'alt1') {
+                drawAngleArc(ctx, B, C, A, 28, 'rgba(245, 158, 11, 0.5)', '∠BCA');
+                drawAngleArc(ctx, D, A, C, 28, 'rgba(245, 158, 11, 0.5)', '∠DAC');
+            }
+            if (hl === 'alt2') {
+                drawAngleArc(ctx, C, A, B, 28, 'rgba(20, 184, 166, 0.5)', '∠BAC');
+                drawAngleArc(ctx, A, C, D, 28, 'rgba(20, 184, 166, 0.5)', '∠DCA');
+            }
+            if (hl === 'coInt1') {
+                drawAngleArc(ctx, D, A, B, 26, 'rgba(236, 72, 153, 0.45)', '∠A');
+                drawAngleArc(ctx, C, D, A, 26, 'rgba(236, 72, 153, 0.45)', '∠D');
+            }
+            if (hl === 'coInt2') {
+                drawAngleArc(ctx, C, D, A, 26, 'rgba(20, 184, 166, 0.45)', '∠D');
+                drawAngleArc(ctx, B, C, D, 26, 'rgba(20, 184, 166, 0.45)', '∠C');
+            }
+            if (hl === 'oppAngles') {
+                drawAngleArc(ctx, D, A, B, 26, 'rgba(99, 102, 241, 0.5)', '∠A');
+                drawAngleArc(ctx, B, C, D, 26, 'rgba(99, 102, 241, 0.5)', '∠C');
+                drawAngleArc(ctx, A, B, C, 22, 'rgba(245, 158, 11, 0.45)', '∠B');
+                drawAngleArc(ctx, C, D, A, 22, 'rgba(245, 158, 11, 0.45)', '∠D');
+            }
+
+            // Vertices
+            drawVertex(ctx, A, 'A', false, '#4f46e5', { x: -14, y: 14 });
+            drawVertex(ctx, B, 'B', false, '#4f46e5', { x: 14, y: 14 });
+            drawVertex(ctx, C, 'C', false, '#4f46e5', { x: 14, y: -14 });
+            drawVertex(ctx, D, 'D', false, '#4f46e5', { x: -14, y: -14 });
+        }
+
+        attachDragEvents(
+            canvasTheorem,
+            () => (activeThmIdx >= 8 ? mptTri : []),
+            (idx, pos, isStart) => {
+                if (activeThmIdx < 8) return;
+                if (isStart) { draggingMptIdx = idx; drawTheoremCanvas(); }
+                else if (idx === -2) { draggingMptIdx = -1; drawTheoremCanvas(); }
+                else if (draggingMptIdx >= 0 && pos) {
+                    const rect = canvasTheorem.parentElement.getBoundingClientRect();
+                    mptTri[draggingMptIdx].x = clamp(pos.x, 30, rect.width - 60);
+                    mptTri[draggingMptIdx].y = clamp(pos.y, 30, rect.height - 30);
+                    drawTheoremCanvas();
+                }
+            },
+            (hIdx) => {
+                if (activeThmIdx >= 8) canvasTheorem.style.cursor = hIdx >= 0 ? 'grab' : 'default';
+            }
+        );
+
+        // =========================================================================
+        // 5. SECTION 4: IMPORTANT NCERT SOLVED RIDERS / PROPERTIES
+        // =========================================================================
+        const ridersData = [
+          {
+                badge: 'NCERT Example 1',
+                title: 'Each angle of a rectangle is a right angle (90°).',
+                given: 'ABCD is a rectangle in which ∠A = 90°.',
+                prove: '∠B = ∠C = ∠D = 90°',
+                proof: [
+                    'Since a rectangle is a parallelogram, AD ∥ BC and AB is a transversal.',
+                    '∠A + ∠B = 180° (Interior angles on the same side of the transversal).',
+                    'Since ∠A = 90°, we get 90° + ∠B = 180° ⇒ ∠B = 90°.',
+                    'Also, opposite angles of a parallelogram are equal: ∠C = ∠A = 90° and ∠D = ∠B = 90°.'
+                ]
+            },
+            {
+                badge: 'NCERT Example 2',
+                title: 'The diagonals of a rhombus are perpendicular to each other.',
+                given: 'ABCD is a rhombus whose diagonals AC and BD intersect at O.',
+                prove: '∠AOD = 90° (i.e., AC ⊥ BD)',
+                proof: [
+                    'In a rhombus, all sides are equal: AB = BC = CD = DA, and diagonals bisect each other (OA = OC).',
+                    'In △AOD and △COD: OA = OC, OD = OD (Common), and AD = CD (Sides of rhombus).',
+                    'By SSS congruence rule, △AOD ≅ △COD ⇒ ∠AOD = ∠COD (CPCT).',
+                    'Since ∠AOD + ∠COD = 180° (Linear pair), 2∠AOD = 180° ⇒ ∠AOD = 90°.'
+                ]
+            },
+            {
+                badge: 'NCERT Example 5',
+                title: 'The bisectors of angles of a parallelogram form a rectangle.',
+                given: 'Parallelogram ABCD where bisectors of ∠A, ∠B, ∠C, ∠D intersect at P, Q, R, S.',
+                prove: 'Quadrilateral PQRS is a rectangle.',
+                proof: [
+                    'In △ASD, DS bisects ∠D and AS bisects ∠A. So ∠DAS + ∠ADS = ½(∠A + ∠D).',
+                    'Since AD ∥ BC, ∠A + ∠D = 180° ⇒ ∠DAS + ∠ADS = ½(180°) = 90°.',
+                    'By angle sum in △ASD, ∠DSA = 180° − 90° = 90° ⇒ ∠PSR = 90° (Vertically opposite).',
+                    'Similarly, ∠PQR = 90°, ∠SPQ = 90°, and ∠SRQ = 90°. Thus PQRS is a rectangle.'
+                ]
+            },
+            {
+                badge: 'NCERT Example 7',
+                title: 'Joining mid-points of sides of a triangle divides it into 4 congruent triangles.',
+                given: 'In △ABC, D, E, F are mid-points of sides AB, BC, and CA respectively.',
+                prove: '△BDE ≅ △DAF ≅ △EFC ≅ △FED',
+                proof: [
+                    'By Mid-Point Theorem (8.9), DE ∥ AC, DF ∥ BC, and EF ∥ AB.',
+                    'Therefore, ADEF, BDFE, and DFCE are all parallelograms.',
+                    'Diagonal DE divides parallelogram BDFE into two congruent triangles: △BDE ≅ △FED.',
+                    'Similarly, △DAF ≅ △FED and △EFC ≅ △FED. Hence all four triangles are congruent.'
+                ]
+            }
+        ];
+
+        function renderRiders() {
+            const grid = document.getElementById('ridersGrid');
+            grid.innerHTML = ridersData.map(r => `
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800">${r.badge}</span>
+                        <h3 class="text-base font-bold text-slate-900 mt-2">${r.title}</h3>
+                        <div class="mt-2 text-xs text-slate-700 space-y-1 bg-white p-3 rounded-xl border border-slate-200">
+                            <div><strong>Given:</strong> ${r.given}</div>
+                            <div><strong class="text-teal-700">To Prove:</strong> <span class="math-font font-semibold">${r.prove}</span></div>
+                        </div>
+                    </div>
+                    <div class="space-y-1.5 text-xs sm:text-sm text-slate-700">
+                        <div class="font-bold text-slate-900 text-xs uppercase tracking-wider">Proof:</div>
+                        ${r.proof.map((step, i) => `
+                            <div class="flex items-start gap-2">
+                                <span class="font-bold text-indigo-600 math-font">${i + 1}.</span>
+                                <span>${step}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // =========================================================================
+        // 6. SECTION 5: 10-QUESTION INTERACTIVE PRACTICE QUIZ
+        // =========================================================================
+        const quizQuestions = [
+            {
+                q: 'The angles of a quadrilateral are in the ratio 3 : 5 : 9 : 13. Find the largest angle of the quadrilateral.',
+                options: ['117°', '156°', '130°', '144°'],
+                ans: 1,
+                exp: 'Let angles be 3x, 5x, 9x, 13x. Sum = 30x = 360° ⇒ x = 12°. Largest angle = 13 × 12° = 156°.'
+            },
+            {
+                q: 'In a parallelogram ABCD, if ∠A = 75°, what is the measure of ∠B?',
+                options: ['75°', '105°', '115°', '90°'],
+                ans: 1,
+                exp: 'Adjacent angles of a parallelogram are supplementary: ∠A + ∠B = 180° ⇒ ∠B = 180° − 75° = 105°.'
+            },
+            {
+                q: 'Which of the following quadrilaterals has diagonals that are equal AND perpendicular to each other?',
+                options: ['Rhombus', 'Rectangle', 'Square', 'Parallelogram'],
+                ans: 2,
+                exp: 'A square has equal diagonals (like a rectangle) that bisect each other at 90° (like a rhombus).'
+            },
+            {
+                q: 'In △ABC, E and F are the mid-points of sides AB and AC respectively. If BC = 14.6 cm, find the length of EF.',
+                options: ['14.6 cm', '7.3 cm', '29.2 cm', '3.65 cm'],
+                ans: 1,
+                exp: 'By the Mid-Point Theorem (Theorem 8.9), EF = ½ BC = ½ × 14.6 cm = 7.3 cm.'
+            },
+            {
+                q: 'Which congruence criterion is used in NCERT Theorem 8.1 to prove that a diagonal divides a parallelogram into two congruent triangles?',
+                options: ['SSS', 'SAS', 'ASA', 'RHS'],
+                ans: 2,
+                exp: 'Using two pairs of alternate interior angles and the common diagonal side, ASA congruence rule is applied.'
+            },
+            {
+                q: 'If the diagonals of a parallelogram are equal, then it is necessarily a:',
+                options: ['Rhombus', 'Kite', 'Rectangle', 'Trapezium'],
+                ans: 2,
+                exp: 'NCERT Exercise 8.1 Q2: If the diagonals of a parallelogram are equal, its interior angles are 90°, making it a rectangle.'
+            },
+            {
+                q: 'The figure formed by joining the mid-points of the adjacent sides of a quadrilateral is always a:',
+                options: ['Square', 'Rectangle', 'Parallelogram', 'Rhombus'],
+                ans: 2,
+                exp: 'By applying the Mid-Point Theorem to both triangles formed by a diagonal, opposite sides are parallel and equal to half the diagonal, forming a parallelogram.'
+            },
+            {
+                q: 'In a rhombus ABCD, if ∠ACB = 40°, find ∠ADB.',
+                options: ['40°', '50°', '90°', '80°'],
+                ans: 1,
+                exp: 'Diagonals of a rhombus intersect at O at 90°. In △BOC, ∠OBC = 180° − (90° + 40°) = 50°. Since AD ∥ BC, alternate angle ∠ADB = ∠OBC = 50°.'
+            },
+            {
+                q: 'Which of the following statements is FALSE according to NCERT Class 9?',
+                options: [
+                    'Every square is a rectangle.',
+                    'Every rhombus is a parallelogram.',
+                    'Every kite is a parallelogram.',
+                    'Every parallelogram is a trapezium.'
+                ],
+                ans: 2,
+                exp: 'A kite has two pairs of equal adjacent sides, not parallel opposite sides, so it is NOT a parallelogram.'
+            },
+            {
+                q: 'Three parallel lines l, m, n are intersected by transversals p and q such that l, m, n cut off equal intercepts AB and BC on p. By Theorem 8.10, what is true about intercepts DE and EF on q?',
+                options: ['DE = 2 EF', 'DE = EF', 'DE + EF = 180°', 'DE ⊥ EF'],
+                ans: 1,
+                exp: 'NCERT Example 8 (Intercept Theorem): Equal intercepts on one transversal guarantee equal intercepts (DE = EF) on any other transversal.'
+            }
+        ];
+
+        let userAnswers = new Array(quizQuestions.length).fill(null);
+
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = quizQuestions.map((item, qIdx) => `
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-3">
+                    <div class="font-bold text-sm sm:text-base text-slate-900">
+                        <span class="text-indigo-600 mr-1">Q${qIdx + 1}.</span> ${item.q}
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        ${item.options.map((opt, oIdx) => {
+                            let btnClass = 'bg-white border-slate-300 text-slate-700 hover:bg-indigo-50 hover:border-indigo-300';
+                            if (userAnswers[qIdx] !== null) {
+                                if (oIdx === item.ans) btnClass = 'bg-teal-600 border-teal-600 text-white font-semibold';
+                                else if (oIdx === userAnswers[qIdx]) btnClass = 'bg-rose-600 border-rose-600 text-white font-semibold';
+                                else btnClass = 'bg-white border-slate-200 text-slate-400';
+                            }
+                            return `
+                                <button onclick="answerQuiz(${qIdx}, ${oIdx})" ${userAnswers[qIdx] !== null ? 'disabled' : ''}
+                                    class="text-left px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm transition cursor-pointer ${btnClass}">
+                                    <span class="font-bold mr-1.5 math-font">${String.fromCharCode(65 + oIdx)}.</span> ${opt}
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                    ${userAnswers[qIdx] !== null ? `
+                        <div class="text-xs p-3 rounded-xl border ${userAnswers[qIdx] === item.ans ? 'bg-teal-50 border-teal-200 text-teal-900' : 'bg-rose-50 border-rose-200 text-rose-900'}">
+                            <strong>${userAnswers[qIdx] === item.ans ? 'Correct!' : 'Incorrect.'}</strong> ${item.exp}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+
+            const score = userAnswers.reduce((acc, val, idx) => acc + (val === quizQuestions[idx].ans ? 1 : 0), 0);
+            document.getElementById('quizScore').textContent = score;
+        }
+
+        function answerQuiz(qIdx, oIdx) {
+            if (userAnswers[qIdx] !== null) return;
+            userAnswers[qIdx] = oIdx;
+            renderQuiz();
+        }
+
+        function resetQuiz() {
+            userAnswers = new Array(quizQuestions.length).fill(null);
+            renderQuiz();
+        }
+
+        // =========================================================================
+        // 7. INITIALIZATION ON WINDOW LOAD
+        // =========================================================================
+        window.addEventListener('resize', () => {
+            if (currentSection === 'intro') resizeAndDrawIntro();
+            if (currentSection === 'types') resizeAndDrawShapeLab();
+            if (currentSection === 'theorems') resizeAndDrawTheorem();
+        });
+
+        window.onload = function () {
+            resizeAndDrawIntro();
+            selectShapeType('parallelogram');
+            renderTFCheck();
+            initTheoremTabs();
+            renderRiders();
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>
